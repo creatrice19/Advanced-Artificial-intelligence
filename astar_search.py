@@ -23,11 +23,11 @@ def plot_maze1(maze):
     for i in range(len(maze)):
         for j in range(len(maze[i])):
             if maze[i][j] == '%':
-                ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor='yellow'))
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor='blue'))
             elif maze[i][j] == '.':
-                ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor='red',linestyle='dotted'))
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor='pink',linestyle='dotted'))
             elif maze[i][j] == 'P':
-                ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor='green'))
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor='yellow'))
 
     
     ax.set_xlim(0, len(maze[0]))
