@@ -67,6 +67,7 @@ def astar(maze, goal_states):
     max_tree_depth = 0
     max_border_size = 1
     remaining_goals = set(goal_states)
+    all_paths = []
 
     # Performing A* search
     while not border.empty() and remaining_goals:
@@ -75,7 +76,10 @@ def astar(maze, goal_states):
         num_nodes_expanded += 1
         # Return the path if the current node is the goal position
         if curr_place in goal_states:
-            return path, len(path), num_nodes_expanded, max_tree_depth, max_border_size
+            remaining_goals.discard(curr_place)
+            all_paths.append(path)
+            if not remaining_goals:
+                return all_paths, len(path), num_nodes_expanded, max_tree_depth, max_border_size
 
 
         # Add the current node to the visited set if it has not been visited before
@@ -115,11 +119,11 @@ def run_astar(file_list):
             for j in range(cols):
                 if maze[i][j] == ".":
                     goal_states.append((i, j))
-        path, path_len, num_nodes_expanded, max_tree_depth, max_border_size = astar(maze, goal_states)
+        all_paths, path_len, num_nodes_expanded, max_tree_depth, max_border_size = astar(maze, goal_states)
 
-        path, path_len, num_nodes_expanded, max_tree_depth, max_border_size = astar(maze, goal_states)
+        all_paths, path_len, num_nodes_expanded, max_tree_depth, max_border_size = astar(maze, goal_states)
 
-        if path is None:
+        if all_paths is None:
             print(f"No path found for {file_name}.")
         else:
             print(f"Path found for {file_name}:")
@@ -127,9 +131,14 @@ def run_astar(file_list):
             print("Number of nodes expanded:", num_nodes_expanded)
             
             # Mark the visited squares on the path in the maze
-            for step in path:
-                i, j = step
-                maze[i][j] = "."
+            for steps in all_paths:
+                for step in steps:
+                    if len(step) == 2:
+                        i, j = step
+                        maze[i][j] = "."
+                    else:
+                        i = step[0]
+                        maze[i][j] = "."
 
             # Print the updated maze
             print_maze(maze)

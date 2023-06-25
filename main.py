@@ -1,9 +1,9 @@
+# working for tinysearch
 import sys
 import matplotlib.pyplot as plt
 from collections import deque
 
 from astar_search import *
-
 
 # Function to read a maze from the given file
 def read_maze(filename):
@@ -51,17 +51,19 @@ def bfs(maze):
     num_nodes_expanded = 0
     max_tree_depth = 0
     max_border_size = 1
+    all_paths = []
 
     # Performing Breadth-first search
     while border:
         curr_state = border.popleft()
         num_nodes_expanded += 1
 
-        for goal_state in goal_states:
+        for goal_state in goal_states[:]:
             if curr_state.coordinates == goal_state.coordinates:
                 goal_states.remove(goal_state)  # Remove the goal state from the list once reached
+                all_paths.append(curr_state.path) # Append the path to all_paths
                 if not goal_states:  # Check if all goal states have been reached
-                    return curr_state.path, len(curr_state.path), num_nodes_expanded, max_tree_depth, max_border_size
+                    return all_paths, len(curr_state.path), num_nodes_expanded, max_tree_depth, max_border_size
                 
         if curr_state.coordinates not in visited:
             visited.add(curr_state.coordinates)
@@ -106,14 +108,15 @@ def run_bfs():
     for file in file_names:
         print('\n')
         maze = read_maze(file)
-        sol, path_cost, num_nodes_expanded, max_tree_depth, max_border_size = bfs(maze)
-        if sol is not None:
+        all_paths, path_cost, num_nodes_expanded, max_tree_depth, max_border_size = bfs(maze)
+        if all_paths is not None:
             print("BFS solution:", file, "with path cost of", path_cost)
             print("Number of nodes expanded:", num_nodes_expanded)
             print("Maximum tree depth searched:", max_tree_depth)
             print("Maximum size of the fringe:", max_border_size)
             print("Visualizing solution:")
-            visualize_solution(maze, sol)
+            for path in all_paths:
+                visualize_solution(maze, path)
             plot_maze1(maze)
         else:
             print("BFS failed to find a solution", file=sys.stderr)
